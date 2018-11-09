@@ -1,0 +1,3 @@
+hypercorn==0.2.4
+quart
+boto3

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Asyncio Progress Bar Demo</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    var percent;
+
+    function checkStatus() {
+        $.getJSON('""" + url_for('check_status') + """', function (data) {
+            console.log(data);
+            percent = parseFloat(data.percent_complete);
+            update_bar(percent);
+            update_text(percent);
+          });
+        if (percent != 100) {
+            setTimeout(checkStatus, 1000);
+        }
+    }
+
+    function update_bar(val) {
+        if (val.length <= 0) {
+            val = 0;
+        }
+        $( "#progressBar" ).progressbar({
+            value: val
+        });
+    };
+
+    function update_text(val) {
+        if (val != 100) {
+            document.getElementById("progressData").innerHTML = "&nbsp;<center>"+percent+"%</center>";
+        } else {
+            document.getElementById("progressData").innerHTML = "&nbsp;<center>Done!</center>";
+        }
+    }
+
+    checkStatus();
+
+
+    var es = new EventSource('/sse');
+    es.onmessage = function (event) {
+        console.log(event);
+        console.log(event);
+        var messages_dom = document.getElementsByTagName('ul')[0];
+        var message_dom = document.createElement('li');
+        var content_dom = document.createTextNode('Received: ' + event.data);
+        message_dom.appendChild(content_dom);
+        messages_dom.appendChild(message_dom);
+    };
+
+    </script>
+</head>
+<body>
+<center><h2>Progress of work is shown below</h2></center>
+<div id="progressBar"></div>
+<div id="progressData" name="progressData">
+    <center></center>
+</div>
+
+<ul></ul>
+</body>
+</html>
